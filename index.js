@@ -273,4 +273,4 @@ async function init() {
   picktarget();
 }
 
-document.addEventListener('DOMcontentloaded', init);
+document.addEventListener('DOMContentLoaded', init);
