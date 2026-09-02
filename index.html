@@ -70,7 +70,7 @@
   }
   .guess-row{ position:relative; margin:18px 0 8px; }
   .guess-input-wrap{ display:flex; gap:8px; }
-  input#guessInput{
+  input#guessinput{
     flex:1;
     padding:13px 14px;
     font-size:15px;
@@ -81,8 +81,8 @@
     color:var(--ink);
     outline:none;
   }
-  input#guessInput:focus{ border-color:var(--ink); }
-  button#submitBtn{
+  input#guessinput:focus{ border-color:var(--ink); }
+  button#submitbtn{
     padding:0 18px;
     border:none;
     border-radius:6px;
@@ -94,8 +94,8 @@
     letter-spacing:0.03em;
     cursor:pointer;
   }
-  button#submitBtn:disabled{ opacity:0.35; cursor:default; }
-  button#submitBtn:not(:disabled):hover{ background:#333; }
+  button#submitbtn:disabled{ opacity:0.35; cursor:default; }
+  button#submitbtn:not(:disabled):hover{ background:#333; }
   .suggestions{
     position:absolute;
     top:calc(100% + 4px);
@@ -125,13 +125,13 @@
     font-size:12px; color:var(--ink-soft);
     margin:2px 2px 14px;
   }
-  #guessCount{ font-weight:600; color:var(--ink); }
-  #newGameBtn, #giveUpBtn{
+  #guesscount{ font-weight:600; color:var(--ink); }
+  #newgamebtn, #giveupbtn{
     background:none; border:1px solid var(--line); color:var(--ink-soft);
     font-family:'IBM Plex Mono', monospace; font-size:11px;
     padding:5px 9px; border-radius:4px; cursor:pointer;
   }
-  #newGameBtn:hover, #giveUpBtn:hover{ border-color:var(--ink); color:var(--ink); }
+  #newgamebtn:hover, #giveupbtn:hover{ border-color:var(--ink); color:var(--ink); }
   .chip{
     display:inline-flex; align-items:center; justify-content:center;
     font-family:'IBM Plex Mono', monospace;
@@ -198,22 +198,22 @@
     <div class="board">
       <span class="dot"></span>
       <h1>mrtdle</h1>
-      <span class="sub" id="dateTag"></span>
+      <span class="sub" id="datetag"></span>
     </div>
     <p class="tagline">guess the MRT station. every guess tells you the line(s), how far away and in what direction, and whether you're in the right planning area.</p>
   </header>
   <div class="meta-row">
-    <span>Guess <span id="guessCount">0</span> / 8</span>
+    <span>Guess <span id="guesscount">0</span> / 8</span>
     <span style="display:flex; gap:8px;">
-      <button id="giveUpBtn">reveal</button>
-      <button id="newGameBtn">new station</button>
+      <button id="giveupbtn">reveal</button>
+      <button id="newgamebtn">new station</button>
     </span>
   </div>
 
   <div class="guess-row">
     <div class="guess-input-wrap">
-      <input id="guessInput" type="text" placeholder="Type a station name…" autocomplete="off">
-      <button id="submitBtn" disabled>guess</button>
+      <input id="guessinput" type="text" placeholder="Type a station name…" autocomplete="off">
+      <button id="submitbtn" disabled>guess</button>
     </div>
     <div class="suggestions" id="suggestions" style="display:none;"></div>
   </div>
