@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mrtdle, its wordle but mrt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F2ED;
+    --panel:#FFFFFF;
+    --line:#DEDAD0;
+    --ink:#1B1D1B;
+    --ink-soft:#5B5D57;
+    --ns:#E1251B;
+    --ew:#009645;
+    --ne:#9B26B6;
+    --cc:#FA9E0D;
+    --dt:#005EC4;
+    --te:#9D5B25;
+    --hit:#1E824C;
+    --near:#D9A441;
+    --miss:#B8B4A8;
+    --shadow: 0 1px 0 rgba(0,0,0,0.04);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+  }
+  .app{ width:100%; max-width:560px; }
+  header{ margin-bottom:18px; }
+  .board{
+    display:flex; align-items:center; gap:10px;
+    background:var(--ink);
+    color:var(--paper);
+    padding:12px 16px;
+    border-radius:4px;
+  }
+  .board .dot{
+    width:10px;height:10px;border-radius:50%;
+    background: linear-gradient(90deg, var(--ns) 0 20%, var(--ew) 20% 40%, var(--ne) 40% 60%, var(--cc) 60% 80%, var(--dt) 80% 100%);
+    flex:0 0 auto;
+  }
+  .board h1{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.04em;
+    font-size:20px;
+    margin:0;
+    font-weight:700;
+  }
+  .board span.sub{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:#C8C4B6;
+    margin-left:auto;
+  }
+  .tagline{
+    margin:10px 2px 0;
+    color:var(--ink-soft);
+    font-size:14px;
+    line-height:1.5;
+  }
+  .guess-row{ position:relative; margin:18px 0 8px; }
+  .guess-input-wrap{ display:flex; gap:8px; }
+  input#guessInput{
+    flex:1;
+    padding:13px 14px;
+    font-size:15px;
+    font-family:'IBM Plex Sans', sans-serif;
+    border:1.5px solid var(--line);
+    border-radius:6px;
+    background:var(--panel);
+    color:var(--ink);
+    outline:none;
+  }
+  input#guessInput:focus{ border-color:var(--ink); }
+  button#submitBtn{
+    padding:0 18px;
+    border:none;
+    border-radius:6px;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.03em;
+    cursor:pointer;
+  }
+  button#submitBtn:disabled{ opacity:0.35; cursor:default; }
+  button#submitBtn:not(:disabled):hover{ background:#333; }
+  .suggestions{
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0; right:0;
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:6px;
+    max-height:240px;
+    overflow-y:auto;
+    z-index:5;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  }
+  .suggestions div{
+    padding:10px 14px;
+    font-size:14px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+  }
+  .suggestions div:hover, .suggestions div.active{ background:var(--paper); }
+  .suggestions .chips{ display:flex; gap:4px; }
+  .meta-row{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; color:var(--ink-soft);
+    margin:2px 2px 14px;
+  }
+  #guessCount{ font-weight:600; color:var(--ink); }
+  #newGameBtn, #giveUpBtn{
+    background:none; border:1px solid var(--line); color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    padding:5px 9px; border-radius:4px; cursor:pointer;
+  }
+  #newGameBtn:hover, #giveUpBtn:hover{ border-color:var(--ink); color:var(--ink); }
+  .chip{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px; font-weight:700; color:#fff;
+    padding:2px 6px; border-radius:3px;
+    letter-spacing:0.02em;
+  }
+  .chip.dim{ opacity:0.32; filter:grayscale(0.4); }
+  #guesses{ display:flex; flex-direction:column-reverse; gap:10px; }
+  .card{
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    box-shadow:var(--shadow);
+    animation: rise 0.25s ease;
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  .card.win{ border-color:var(--hit); background:#F1F8F4; }
+  .card-top{
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+    margin-bottom:8px;
+  }
+  .card-top .name{ font-weight:600; font-size:15px; }
+  .card-top .area{ font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; }
+  .clues{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; }
+  .clue{ border-radius:6px; padding:8px 8px; text-align:center; background:var(--paper); }
+  .clue .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9.5px; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .clue .value{ font-size:13px; font-weight:600; }
+  .clue.hit{ background:#DCEFE2; }
+  .clue.near{ background:#F7EBCB; }
+  .clue.miss{ background:#EDEBE3; }
+  .clue .lines-wrap{ display:flex; flex-wrap:wrap; gap:3px; justify-content:center; }
+  .clue .arrow{ display:inline-block; margin-right:4px; font-size:13px; }
+  .full-row{ margin-top:8px; }
+  .banner{
+    margin-top:16px;
+    padding:16px;
+    border-radius:8px;
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .banner h2{ margin:0 0 6px; font-family:'IBM Plex Mono', monospace; font-size:16px; }
+  .banner p{ margin:0; font-size:13px; color:#C8C4B6; line-height:1.5; }
+  .banner .lines-wrap{ margin-top:8px; display:flex; gap:5px; }
+  footer{
+    margin-top:26px; text-align:center; font-size:11.5px; color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  @media (max-width:420px){
+    .clues{ grid-template-columns: 1fr 1fr; }
+    .clue:last-child:nth-child(odd){ grid-column: span 2; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="board">
+      <span class="dot"></span>
+      <h1>mrtdle</h1>
+      <span class="sub" id="dateTag"></span>
+    </div>
+    <p class="tagline">guess the MRT station. every guess tells you the line(s), how far away and in what direction, and whether you're in the right planning area.</p>
+  </header>
+  <div class="meta-row">
+    <span>Guess <span id="guessCount">0</span> / 8</span>
+    <span style="display:flex; gap:8px;">
+      <button id="giveUpBtn">reveal</button>
+      <button id="newGameBtn">new station</button>
+    </span>
+  </div>
+
+  <div class="guess-row">
+    <div class="guess-input-wrap">
+      <input id="guessInput" type="text" placeholder="Type a station name…" autocomplete="off">
+      <button id="submitBtn" disabled>guess</button>
+    </div>
+    <div class="suggestions" id="suggestions" style="display:none;"></div>
+  </div>
+
+  <div id="banner"></div>
+  <div id="guesses"></div>
+
+  <footer>stops away is the shortest path along the real MRT network (line changes included). planning areas follow URA's 2019 master plan boundaries (approximate).</footer>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>
