@@ -9,24 +9,38 @@ let guesses = [];
 let over = false;
 
 async function loaddata() {
-  const res = await fetch('stations.json');
-  const data = await res.json();
-
-  stations = data.stations.map(([name, lines, area, lat, lng]) => ({
-    name, lines, area, region: data.region[area] || 'Central', lat, lng
-  }));
-
-  graph = {};
-  stations.forEach(s => graph[s.name] = new Set());
-  Object.values(data.lineSequences).forEach(seq => {
-    for (let i = 0; i < seq.length - 1; i++) {
-      const a = seq[i], b = seq[i + 1];
-      if (!graph[a]) graph[a] = new Set();
-      if (!graph[b]) graph[b] = new Set();
-      graph[a].add(b);
-      graph[b].add(a);
+  try {
+    const res = await fetch('stations.json');
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
-  });
+    const data = await res.json();
+
+    stations = data.stations.map(([name, lines, area, lat, lng]) => ({
+      name, lines, area, region: data.region[area] || 'Central', lat, lng
+    }));
+
+    graph = {};
+    stations.forEach(s => graph[s.name] = new Set());
+    Object.values(data.lineSequences).forEach(seq => {
+      for (let i = 0; i < seq.length - 1; i++) {
+        const a = seq[i], b = seq[i + 1];
+        if (!graph[a]) graph[a] = new Set();
+        if (!graph[b]) graph[b] = new Set();
+        graph[a].add(b);
+        graph[b].add(a);
+      }
+    });
+    console.log('Loaded', stations.length, 'stations');
+  } catch (error) {
+    console.error('Error loading data:', error);
+    const bannerel = document.getElementById('banner');
+    bannerel.innerHTML = `<div class="banner" style="background:#E1251B;">
+      <h2>error loading data</h2>
+      <p>could not load stations.json. are u quite sure the file exists.</p>
+      <p style="color:#fff;font-size:12px;">error: ${error.message}</p>
+    </div>`;
+  }
 }
 
 function stopsaway(a, b) {
@@ -78,6 +92,10 @@ function proximityclass(stops) {
 }
 
 function picktarget() {
+  if (stations.length === 0) {
+    console.warn('No stations loaded yet!');
+    return;
+  }
   target = stations[Math.floor(Math.random() * stations.length)];
   guesses = [];
   over = false;
@@ -148,6 +166,7 @@ function cardhtml(g) {
 }
 
 function render() {
+  if (!guesscountel || !guessesel) return;
   guesscountel.textContent = guesses.length;
   guessesel.innerHTML = guesses.map(cardhtml).join('');
 
