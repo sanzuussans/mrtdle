@@ -1,5 +1,5 @@
-const linecolour = {ns:'var(--ns)', ew:'var(--ew)', ne:'var(--ne)', cc:'var(--cc)', dt:'var(--dt)', te:'var(--te)'};
-const linename = {ns:'North South', ew:'East West', ne:'North East', cc:'Circle', dt:'Downtown', te:'Thomson-East Coast'};
+const linecolour = {ns:'var(--ns)', ew:'var(--ew)', ne:'var(--ne)', cc:'var(--cc)', dt:'var(--dt)', te:'var(--te)', bp:'#7A7A7A', sk:'#6B7280', pg:'#87909A'};
+const linename = {ns:'North South', ew:'East West', ne:'North East', cc:'Circle', dt:'Downtown', te:'Thomson-East Coast', bp:'Bukit Panjang LRT', sk:'Sengkang LRT', pg:'Punggol LRT'};
 const maxguesses = 8;
 
 let stations = [];
