@@ -34,12 +34,6 @@ async function loaddata() {
     console.log('Loaded', stations.length, 'stations');
   } catch (error) {
     console.error('Error loading data:', error);
-    const bannerel = document.getElementById('banner');
-    bannerel.innerHTML = `<div class="banner" style="background:#E1251B;">
-      <h2>error loading data</h2>
-      <p>could not load stations.json. are u quite sure the file exists.</p>
-      <p style="color:#fff;font-size:12px;">error: ${error.message}</p>
-    </div>`;
   }
 }
 
@@ -93,7 +87,7 @@ function proximityclass(stops) {
 
 function picktarget() {
   if (stations.length === 0) {
-    console.warn('No stations loaded yet!');
+    console.warn('No stations loaded');
     return;
   }
   target = stations[Math.floor(Math.random() * stations.length)];
