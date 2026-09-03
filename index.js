@@ -128,7 +128,7 @@ function cardhtml(g) {
 
   const linechips = g.station.lines.map(l => chiphtml(l, !g.sharedlines.includes(l))).join('');
 
-  const distvalue = g.iswin ? 'Here!' : `<span class="arrow">${arrowfor(g.brg)}</span>${compassfor(g.brg)}`;
+  const distvalue = g.iswin ? 'here!' : `<span class="arrow">${arrowfor(g.brg)}</span>${compassfor(g.brg)}`;
   const stopsvalue = g.iswin ? '0' : `${g.stops}`;
   const areavalue = g.areaexact ? g.station.area : (g.arearegion ? `${g.station.area}*` : g.station.area);
 
@@ -140,20 +140,20 @@ function cardhtml(g) {
     </div>
     <div class="clues">
       <div class="clue ${linesclass}">
-        <div class="label">Line</div>
+        <div class="label">line</div>
         <div class="value lines-wrap">${linechips}</div>
       </div>
       <div class="clue ${distclass}">
-        <div class="label">Direction</div>
+        <div class="label">direction</div>
         <div class="value">${distvalue}</div>
       </div>
       <div class="clue ${distclass}">
-        <div class="label">Stops away</div>
+        <div class="label">stops away</div>
         <div class="value">${stopsvalue}</div>
       </div>
       <div class="clue full-row ${areaclass}" style="grid-column:1/-1;">
-        <div class="label">Planning area</div>
-        <div class="value">${areavalue}${g.arearegion ? ' — same region' : ''}</div>
+        <div class="label">planning area</div>
+        <div class="value">${areavalue}${g.arearegion ? ', same region' : ''}</div>
       </div>
     </div>
   </div>`;
@@ -168,14 +168,14 @@ function render() {
   if (over) {
     if (won) {
       bannerel.innerHTML = `<div class="banner">
-        <h2>Solved in ${guesses.length} ${guesses.length === 1 ? 'guess' : 'guesses'}</h2>
-        <p>${target.name} — ${target.area} planning area.</p>
+        <h2>solved in ${guesses.length} ${guesses.length === 1 ? 'guess' : 'guesses'}</h2>
+        <p>${target.name}, ${target.area} planning area.</p>
         <div class="lines-wrap">${target.lines.map(l => chiphtml(l, false)).join('')}</div>
       </div>`;
     } else {
       bannerel.innerHTML = `<div class="banner">
-        <h2>Out of guesses</h2>
-        <p>The station was <strong style="color:#fff">${target.name}</strong> — ${target.area} planning area.</p>
+        <h2>out of guesses</h2>
+        <p>the station was <strong style="color:#fff">${target.name}</strong>, ${target.area} planning area.</p>
         <div class="lines-wrap">${target.lines.map(l => chiphtml(l, false)).join('')}</div>
       </div>`;
     }
