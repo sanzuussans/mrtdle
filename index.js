@@ -118,7 +118,7 @@ function makeguess(name) {
 let guessinput, suggestionsel, submitbtn, guessesel, bannerel, guesscountel;
 
 function chiphtml(line, dim) {
-  return `<span class="chip ${dim ? 'dim' : ''}" style="background:${linecolour[line]}">${line}</span>`;
+  return `<span class="chip ${dim ? 'dim' : ''}" style="background:${linecolour[line.toLowerCase()]}">${line}</span>`;
 }
 
 function cardhtml(g) {
