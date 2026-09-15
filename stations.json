@@ -226,7 +226,7 @@
     ["Sumang", ["PG"], "Punggol", 1.4081, 103.898],
     ["Soo Teck", ["PG"], "Punggol", 1.4051, 103.897]
   ],
-  "lineSequences": {
+  "linesequences": {
     "NS": [
       "Jurong East",
       "Bukit Batok",
